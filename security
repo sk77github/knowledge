@@ -1,0 +1,55 @@
+安全原则：过滤输入，转义输出
+
+sql注入：
+addslashes与mysql_real_escape_string的区别
+http://www.cnblogs.com/suihui/archive/2012/09/20/2694751.html
+
+
+It was just an interesting note. mysql_real_escape_string was designed by the MySQL people 
+for the purposes of inserting data into a database. It utilizes MySQL's library function for escaping certain characters.
+
+I'm strictly interested in the claim that mysql_real_escape_string() is safer.
+So, no, the are both equally as safe (or unsafe) at preventing injections.
+However, someone could make the argument that mysql_real_escape_string is safer at protecting the integrity of data as the 
+PHP manual reads that "If binary data is to be inserted, this function must be used." Of course, it's just a side point.
+
+
+
+However, it is a common thought among a lot of PHP programmers (beginning and even more advanced) that SQL injections 
+are the only thing to guard against with sanitizing user input using it in a query. That, actually, is incorrect.
+If you only rely on *escapestring and addslashes because you are only thinking about injections,
+you leave yourself vulnerable to attacks from users.
+
+
+http://dev.mysql.com/tech-resources/articles/guide-to-php-security-ch3.pdf.
+they use the following illustration of something that neither mysql_real_escape_string or addslashes protects against:
+
+$sub = mysql_real_escape_string("%something"); // still %something
+mysql_query("SELECT * FROM messages WHERE subject LIKE '{$sub}%'");
+And recommends the following:
+
+$sub = addcslashes(mysql_real_escape_string("%something_"), "%_");
+// $sub == \\%something\\_
+mysql_query("SELECT * FROM messages WHERE subject LIKE '{$sub}%'");
+
+
+
+
+Consider the following query:
+
+$iId = mysql_real_escape_string("1 OR 1=1");    
+$sSql = "SELECT * FROM table WHERE id = $iId";
+mysql_real_escape_string() will not protect you against this. 
+The fact that you use single quotes (' ') around your variables inside your query is what protects you against this（查询变量加入单引号）
+
+The following is also an option:（只提供确定的数据，这和在过滤输入时的原则一样，过滤输入是只需要确定的数据）
+$iId = (int) mysql_real_escape_string("1 OR 1=1");
+$sSql = "SELECT * FROM table WHERE id = $iId";
+
+
+
+
+XSS:
+
+CSRF
+
