@@ -1,11 +1,15 @@
 安全原则：过滤输入，转义输出
 
 sql注入：
+https://www.sitepoint.com/community/t/addslashes-vs-mysql-real-escape-string-the-final-debate/2376/9（讨论）
+
 addslashes与mysql_real_escape_string的区别
 http://www.cnblogs.com/suihui/archive/2012/09/20/2694751.html
+http://shiflett.org/blog/2006/jan/addslashes-versus-mysql-real-escape-string（addslashes触发sql注入）
 
 
 It was just an interesting note. mysql_real_escape_string was designed by the MySQL people 
+（http://dev.mysql.com/doc/refman/5.7/en/mysql-real-escape-string.html）
 for the purposes of inserting data into a database. It utilizes MySQL's library function for escaping certain characters.
 
 I'm strictly interested in the claim that mysql_real_escape_string() is safer.
